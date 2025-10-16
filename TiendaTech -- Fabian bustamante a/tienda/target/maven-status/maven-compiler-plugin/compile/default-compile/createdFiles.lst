@@ -1,3 +1,13 @@
+tienda\services\FirebaseStorageService.class
 tienda\ProjectConfig.class
+tienda\domain\Producto.class
 tienda\config\FirebaseConfig.class
+tienda\repository\CategoriaRepository.class
 tienda\TiendaApplication.class
+tienda\controller\ProductoController.class
+tienda\controller\IndexController.class
+tienda\services\ProductoService.class
+tienda\controller\CategoriaController.class
+tienda\domain\Categoria.class
+tienda\repository\ProductoRepository.class
+tienda\services\CategoriaService.class

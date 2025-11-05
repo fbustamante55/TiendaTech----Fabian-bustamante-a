@@ -1,6 +1,7 @@
 tienda\services\FirebaseStorageService.class
 tienda\ProjectConfig.class
 tienda\domain\Producto.class
+tienda\domain\ProductoConsultaAmpliada.class
 tienda\config\FirebaseConfig.class
 tienda\repository\CategoriaRepository.class
 tienda\TiendaApplication.class

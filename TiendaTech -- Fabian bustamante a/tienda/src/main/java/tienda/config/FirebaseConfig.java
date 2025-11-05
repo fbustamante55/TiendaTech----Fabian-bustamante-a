@@ -14,13 +14,17 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FirebaseConfig {
 
-    @Value("${firebase.config.path}")
-    private String firebaseConfigPath;
+    @Value("${firebase.json.path}")
+    private String firebaseJsonPath;
+
+    @Value("${firebase.json.file}")
+    private String firebaseJsonFile;
 
     @Bean
     public Storage storage() throws IOException {
         // Inicializar Firebase si no está ya inicializado
         if (FirebaseApp.getApps().isEmpty()) {
+            String firebaseConfigPath = firebaseJsonPath + "/" + firebaseJsonFile;
             FileInputStream serviceAccount = new FileInputStream(firebaseConfigPath);
             
             FirebaseOptions options = FirebaseOptions.builder()

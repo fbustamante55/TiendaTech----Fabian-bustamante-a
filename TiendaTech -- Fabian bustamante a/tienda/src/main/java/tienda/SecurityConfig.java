@@ -1,71 +1,54 @@
 package tienda;
 
+
+import tienda.domain.Ruta;
+import tienda.services.RutaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import tienda.domain.Ruta;
-import tienda.services.RutaService;
 
 @Configuration
-@EnableWebSecurity
-public class SecurityConfig {
+public class SecurityConfig {   
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, @Lazy RutaService rutaService) throws Exception {
         var rutas = rutaService.getRutas();
-
-        http.csrf(csrf -> csrf.disable());
-
-        http.authorizeHttpRequests(authorize -> {
-            authorize
-                    .requestMatchers(
-                            "/webjars/**",
-                            "/css/**",
-                            "/js/**",
-                            "/images/**",
-                            "/static/**",
-                            "/login",
-                            "/registro/**")
-                    .permitAll();
-
+        http.authorizeHttpRequests(requests -> {
             for (Ruta ruta : rutas) {
-                if (ruta.isRequiereRol() && ruta.getRol() != null) {
-                    authorize.requestMatchers(ruta.getRuta()).hasRole(ruta.getRol().getRol());
+                if (ruta.isRequiereRol()) {
+                    requests.requestMatchers(ruta.getRuta()).hasRole(ruta.getRol().getRol());
                 } else {
-                    authorize.requestMatchers(ruta.getRuta()).permitAll();
+                    requests.requestMatchers(ruta.getRuta()).permitAll();
                 }
             }
-
-            authorize.anyRequest().authenticated();
+            requests.anyRequest().authenticated();
         });
 
-        http.formLogin(form -> form
+        http.formLogin(form -> form // Configuración de formulario de login
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/", true)
                 .failureUrl("/login?error=true")
                 .permitAll()
-        ).logout(logout -> logout
+        ).logout(logout -> logout // Configuración de logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout=true")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll()
-        ).exceptionHandling(exceptions -> exceptions
+        ).exceptionHandling(exceptions -> exceptions // Manejo de excepciones
                 .accessDeniedPage("/acceso_denegado")
-        ).sessionManagement(session -> session
+        ).sessionManagement(session -> session // Configuración de sesiones
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(false)
         );
-
         return http.build();
     }
 
@@ -75,10 +58,10 @@ public class SecurityConfig {
     }
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth,
-            @Lazy PasswordEncoder passwordEncoder,
+    public void configurerGlobal(AuthenticationManagerBuilder build, 
+            @Lazy PasswordEncoder passwordEncoder, 
             @Lazy UserDetailsService userDetailsService) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+        build.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
-}
 
+}

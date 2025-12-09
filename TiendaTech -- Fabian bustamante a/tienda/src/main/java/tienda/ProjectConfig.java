@@ -1,7 +1,6 @@
 package tienda;
 
 import java.util.Locale;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
@@ -24,16 +23,14 @@ public class ProjectConfig implements WebMvcConfigurer {
         registry.addViewController("/multimedia").setViewName("multimedia");
         registry.addViewController("/iframes").setViewName("iframes");
         registry.addViewController("/login").setViewName("login");
-        registry.addViewController("/acceso_denegado").setViewName("acceso_denegado");
         registry.addViewController("/registro/nuevo").setViewName("/registro/nuevo");
-        registry.addViewController("/registro/recordar").setViewName("/registro/recordar");
     }
 
     /* El siguiente método se utilizar para publicar en la nube, independientemente  */
     @Bean
     public SpringResourceTemplateResolver templateResolver_0() {
         SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
-        resolver.setPrefix("classpath:/templates/");
+        resolver.setPrefix("classpath:/templates");
         resolver.setSuffix(".html");
         resolver.setTemplateMode(TemplateMode.HTML);
         resolver.setOrder(0);
@@ -60,6 +57,5 @@ public class ProjectConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registro) {
         registro.addInterceptor(localeChangeInterceptor());
-    }
-
+    }   
 }
